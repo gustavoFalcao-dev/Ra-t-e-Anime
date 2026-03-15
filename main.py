@@ -20,5 +20,9 @@ async def on_message(message):
         return
     if message.content.startswith('$hello'):
         await message.channel.send('Hello!')
+    if message.content.startswith('$test'):
+        a = discord.Embed(title="Test anime", description="Test anime description", color=0xFFC0CB)
+        a.set_image(url="https://a.storyblok.com/f/178900/1413x2000/7269083660/03610357ef4a76af4e984ed4bfc8680c1653890021_main.png/m/filters:quality(95)format(webp)")
+        await message.channel.send(embed=a)
 
 client.run(token)
