@@ -5,8 +5,6 @@ from dotenv import load_dotenv
 
 from init_db import connectDB, createDatabase, databaseExists
 
-# TODO Decidir banco de dados
-
 load_dotenv()
 token = os.getenv("token")
 intents = discord.Intents.default()
@@ -34,12 +32,13 @@ async def on_message(message):
         await message.channel.send("Hello!")
     if message.content.startswith("$test"):
         a = discord.Embed(
-            title="Test anime", description="Test anime description", color=0xFFC0CB
+            title="Akame ga Kill!", description="Anime véri machi gudi", color=0xFFC0CB
         )
         a.set_image(
-            url="https://a.storyblok.com/f/178900/1413x2000/7269083660/03610357ef4a76af4e984ed4bfc8680c1653890021_main.png/m/filters:quality(95)format(webp)"
+            url="https://myanimelist.net/images/anime/1429/95946.webp"
         )
-        await message.channel.send(embed=a)
+        msg = await message.channel.send(embed=a)
+        await msg.add_reaction("👍")
     if message.content.startswith("$setupDB"):
         with set_conn() as conn:
             await message.channel.send("Database setup complete.")
@@ -61,6 +60,5 @@ async def on_message(message):
                     ),
                 )
         await message.channel.send("Banco de dados populado.")
-
 
 client.run(token)
