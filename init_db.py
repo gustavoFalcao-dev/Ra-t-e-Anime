@@ -14,7 +14,7 @@ def createDatabase(path: str) -> sqlite3.Connection:
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS Anime (
-            anime_id                INTEGER PRIMARY KEY AUTOINCREMENT,
+            anime_id                INTEGER PRIMARY KEY,
             anime_title             TEXT    NOT NULL,
             url_anime_main_picture  TEXT,
             alternative_title_en    TEXT,
