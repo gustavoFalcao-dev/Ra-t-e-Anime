@@ -41,8 +41,26 @@ async def on_message(message):
         )
         await message.channel.send(embed=a)
     if message.content.startswith("$setupDB"):
-        conn = set_conn()
-        await message.channel.send("Database setup complete.")
+        with set_conn() as conn:
+            await message.channel.send("Database setup complete.")
+    if message.content.startswith("$populateDB"):
+        with connectDB(DB_PATH) as conn:
+            with conn:
+                cursor = conn.cursor()
+                cursor.execute(
+                    """
+                    INSERT OR IGNORE INTO Anime (anime_id, anime_title, url_anime_main_picture, alternative_title_en, score)
+                    VALUES (?, ?, ?, ?, ?)
+                    """,
+                    (
+                        22199,
+                        "Akame ga Kill!",
+                        "https://myanimelist.net/images/anime/1429/95946.webp",
+                        "Akame ga Kill!",
+                        7.48,
+                    ),
+                )
+        await message.channel.send("Banco de dados populado.")
 
 
 client.run(token)
