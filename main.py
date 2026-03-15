@@ -1,12 +1,15 @@
 import os
-
 import discord
 from dotenv import load_dotenv
-
 from init_db import connectDB, createDatabase, databaseExists
+import endpoint as ep
+
+#TODO add requests to requirements.txt
 
 load_dotenv()
 token = os.getenv("token")
+username = os.getenv("testuser")
+client_token = os.getenv("MALToken")
 intents = discord.Intents.default()
 intents.message_content = True
 client = discord.Client(intents=intents)
@@ -30,15 +33,6 @@ async def on_message(message):
         return
     if message.content.startswith("$hello"):
         await message.channel.send("Hello!")
-    if message.content.startswith("$test"):
-        a = discord.Embed(
-            title="Akame ga Kill!", description="Anime véri machi gudi", color=0xFFC0CB
-        )
-        a.set_image(
-            url="https://myanimelist.net/images/anime/1429/95946.webp"
-        )
-        msg = await message.channel.send(embed=a)
-        await msg.add_reaction("👍")
     if message.content.startswith("$setupDB"):
         with set_conn() as conn:
             await message.channel.send("Database setup complete.")
@@ -60,5 +54,8 @@ async def on_message(message):
                     ),
                 )
         await message.channel.send("Banco de dados populado.")
-
+    if message.content.startswith("$test"):
+	    ep.user_list(username, client_token).teste()
+	    await message.channel.send("Passed.")
+	    
 client.run(token)
