@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from init_db import connectDB, createDatabase, databaseExists
 import endpoint as ep
 
-#TODO add requests to requirements.txt
+#TODO change nav to discord.ui instead of reactions listening
 
 load_dotenv()
 token = os.getenv("token")
@@ -57,5 +57,43 @@ async def on_message(message):
     if message.content.startswith("$test"):
 	    ep.user_list(username, client_token).teste()
 	    await message.channel.send("Passed.")
-	    
+    if message.content.startswith("$list"):
+	    global msg_embed_id
+	    users_reactions = ["🤡","😎"]
+	    embed_users = discord.Embed(
+	    	title = "Qual usuário?",
+		description = "🤡 - GustaHawk\n😎 - Matheusinho",
+		color = discord.Color.pink()
+		)
+	    msg_embed_users = await message.channel.send(embed=embed_users)
+	    msg_embed_id = msg_embed_users.id
+	    for emote in users_reactions:
+		    await msg_embed_users.add_reaction(emote)
+@client.event
+async def on_reaction_add(reaction, user):
+	global msg
+	pages_reactions = ["◀️","▶️"]
+	if user.bot:
+		return
+	if reaction.message.id != msg_embed_id:
+		return
+	if str(reaction.emoji) == "🤡":
+	    pages_reactions = ["◀️","▶️"]
+	    asw = ep.get_json(username, client_token).user_list()
+	    node = asw["data"][0]["node"]
+	    status = asw["data"][0]["list_status"]
+	    embed = discord.Embed(
+	    	title = node["title"],
+		description = "Definetly a anime description",
+		color = discord.Color.pink()
+		)
+	    embed.set_image(url=node["main_picture"]["large"])
+	elif str(reaction.emoji) == "":
+		embed = discord.Embed(
+			title = "Calmai paizao",
+			description = "É só um teste mano, nem tudo ta feito",
+			color = discord.Color.pink()
+			)
+	await reaction.message.edit(embed=embed)
+	await reaction.message.remove_reaction(reaction.emoji, user)
 client.run(token)

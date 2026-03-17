@@ -1,5 +1,6 @@
 import requests
 
+#FIXME class name
 
 class MSG:
 	def __init__(self, username, client_token):
@@ -9,9 +10,8 @@ class MSG:
 			"X-MAL-CLIENT-ID": self.client_token
 		}
 
-class user_list(MSG):
-	def teste(self):
+class get_json(MSG):
+	def user_list(self):
 		url = f"https://api.myanimelist.net/v2/users/{self.username}/animelist?fields=list_status&limit=10"
 		response = requests.get(url, headers=self.header)
-		data = response.json()
-		#print(data)
+		return response.json()
