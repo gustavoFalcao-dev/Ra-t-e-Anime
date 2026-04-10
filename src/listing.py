@@ -1,34 +1,35 @@
-class list:
+class anime_listing:
     def __init__(self, data):
-        self.data = data["data"]
         self.entries = []
-    
-    def anime_list(self, anime_id):
-        self.anime_id = anime_id
-        self.pictures = self.data.get("main_pictures", {})
+        try:
+            self.data = data["data"]
+        except:
+            self.data = data
+
+    def anime_list(self):
+        pics = self.data.get("main_picture", [])
+
         self.entries.append(
             {
                 "title": self.data.get("title"),
-                "anime_image": self.pictures.get("large") or self.pictures.get("medium"),
+                "anime_image": pics.get("large") or pics.get("medium"),
                 "episodes": self.data.get("num_episodes")
             }
         )
         return self.entries
-
+    
     def user_anime_list(self):
         for anime in self.data:
-            self.node = anime.get("node")
-            if not self.node:
-                return print("Not possible to request from MAL database.")
-            self.statuses = anime.get("list_status", {})
-            self.pictures = self.node.get("main_pictures", {})
-
+            node = anime.get("node", anime)
+            title = node.get("title")
+            pics = anime.get("main_picture", {})
+            list_status = anime.get("list_status", {})
             self.entries.append(
                 {
-                    "title": self.node.get("title"),
-                    "anime_image": self.pictures.get("large") or self.pictures.get("medium"),
-                    "status": self.statuses.get("status"),
-                    "score": self.statuses.get("score")
+                    "title": title,
+                    "anime_image": pics.get("large") or pics.get("medium"),
+                    "status": list_status.get("status"),
+                    "score": list_status.get("score")
                 }
             )
         return self.entries

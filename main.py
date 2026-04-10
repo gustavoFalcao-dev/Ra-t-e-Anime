@@ -19,7 +19,7 @@ intents = discord.Intents.default() #Needed to give minimal permissions to the b
 intents.message_content = True #Needed so the bot can read users messages
 bot = commands.Bot(command_prefix = prefix, intents = intents) #Variable containing the bot startup settings
 
-#===========================================================================================
+#===================================================== Data Base =====================================================
 def set_con(): #Function to create database or connect if it already exists
 	return (
 		createDatabase(db_path) if not databaseExists(db_path) else connectDB(db_path)
@@ -28,22 +28,24 @@ def set_con(): #Function to create database or connect if it already exists
 @bot.event
 async def on_ready(): #Function to print a message showing which account the bot is logged on when booted
 	print("We have logged in as {0.user}".format(bot))
-#===========================================================================================
-	
+#=====================================================================================================================
+
 @bot.command()
 async def setupdb(ctx):
 	with set_con() as conn: #Calls the database creation function
 		await ctx.send("Database setup complete.") #Sends a message confirming that it was created
 
+@bot.command()
 async def animelist(ctx, username: str):
-	data = ep.get_json(mal_token).user_list(username) #Stores the parsed list from MAL API on the variable
-	print(username) #Used for testing
+	data = ep.request(mal_token).user_list(username) #Stores the parsed list from MAL API on the variable
 	print(data) #Used for testing
 	print(type(data)) #Used for testing
+	
 
+@bot.command()
 async def anime(ctx, anime_id: int):
-	data = ep.get_json(_, mal_token).anime_request(anime_id) #Stores the anime information in a parsed list
+	data = ep.request(mal_token).anime_request(anime_id) #Stores the anime information in a parsed list
+	print(data) #Used for testing
 	print(type(data)) #Used for testing
-
 
 bot.run(bot_token) #Boots the bot
